@@ -71,7 +71,7 @@ public final class Download {
     }
     
     public String getFileName() {
-        URI base = URI.create("http://cloud.github.com/downloads/" + login + "/" + project + "/");
+        URI base = URI.create("http://github.com/downloads/" + login + "/" + project + "/");
         return base.relativize(URI.create(url.toString())).toString();
     }
     

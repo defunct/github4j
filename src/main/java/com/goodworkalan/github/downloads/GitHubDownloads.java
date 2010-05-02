@@ -73,7 +73,7 @@ public class GitHubDownloads {
             }
             InputStream in = new BufferedInputStream(connection.getInputStream());
             BufferedReader r = new BufferedReader(new InputStreamReader(in, encoding));
-            Pattern pattern = Pattern.compile("id=\"download_(\\d+)\".*?href=\"(http://cloud.github.com/downloads/" + login + "/.*?)\"");
+            Pattern pattern = Pattern.compile("id=\"download_(\\d+)\".*?href=\"(/downloads/" + login + "/" + project + "/.*?)\"");
             StringBuilder buffer = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -83,7 +83,7 @@ public class GitHubDownloads {
             int index = 0;
             List<Download> downloads = new ArrayList<Download>();
             while (matcher.find(index)) {
-                downloads.add(new Download(login, token, project, matcher.group(1), new URL(matcher.group(2))));
+                downloads.add(new Download(login, token, project, matcher.group(1), new URL("http://github.com" + matcher.group(2))));
                 index = matcher.end();
             }
             return downloads;
@@ -120,6 +120,16 @@ public class GitHubDownloads {
             connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
             connection.getOutputStream().write(bytes);
             connection.getOutputStream().flush();
+            if (connection.getResponseCode() / 100 != 2) {
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(connection.getErrorStream());
+                NodeList nodes = doc.getElementsByTagName("error");
+                if (nodes.getLength() != 0) {
+                    throw new IOException(connection.getResponseCode() + ": " + nodes.item(0).getTextContent());
+                }
+                throw new IOException(Integer.toString(connection.getResponseCode()));
+            }
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(connection.getInputStream());
