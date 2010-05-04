@@ -20,9 +20,6 @@ public final class Download {
     /** The GitHub login. */
     private final String login;
     
-    /** The GitHub API token. */
-    private final String token;
-    
     /** The project in the GitHub account. */
     private final String project;
 
@@ -46,9 +43,8 @@ public final class Download {
      * @param url
      *            The download URL.
      */
-    Download(String login, String token, String project, String id, URL url) {
+    Download(String login, String project, String id, URL url) {
         this.login = login;
-        this.token = token;
         this.project = project;
         this.id = id;
         this.url = url;
@@ -80,7 +76,7 @@ public final class Download {
      * 
      * @throws IOException For any I/O error.
      */
-    public void delete() throws GitHubDownloadException {
+    public void delete(String token) throws GitHubDownloadException {
         String apiCall = "http://github.com/" + login + "/" + project + "/downloads/" + id;
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(apiCall).openConnection();
