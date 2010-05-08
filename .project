@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>github-downloads</name>
+  <name>github4j-downloads</name>
   <comment>An API for GitHub downloads in Java.</comment>
   <projects/>
   <buildSpec>

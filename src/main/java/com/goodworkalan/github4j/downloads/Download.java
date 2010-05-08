@@ -1,12 +1,9 @@
-/**
- * 
- */
-package com.goodworkalan.github.downloads;
+package com.goodworkalan.github4j.downloads;
 
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_ERROR;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_FORBIDDEN;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_IO;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.MALFORMED_URL;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.GITHUB_HTTP_ERROR;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.GITHUB_HTTP_FORBIDDEN;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.GITHUB_HTTP_IO;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.MALFORMED_URL;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +13,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
+// TODO Document.
 public final class Download {
     /** The GitHub login. */
     private final String login;
@@ -66,6 +64,7 @@ public final class Download {
         return url;
     }
     
+    // TODO Document.
     public String getFileName() {
         URI base = URI.create("http://github.com/downloads/" + login + "/" + project + "/");
         return base.relativize(URI.create(url.toString())).toString();
@@ -107,6 +106,7 @@ public final class Download {
         }
     }
 
+    // TODO Document.
     @Override
     public String toString() {
         return "{" + getId() + ", " + getUrl() + "}";

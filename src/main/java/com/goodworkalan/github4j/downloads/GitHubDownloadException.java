@@ -1,4 +1,4 @@
-package com.goodworkalan.github.downloads;
+package com.goodworkalan.github4j.downloads;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package com.goodworkalan.github.downloads;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_ERROR;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_FORBIDDEN;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_IO;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.MALFORMED_URL;
+package com.goodworkalan.github4j.downloads;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.GITHUB_HTTP_ERROR;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.GITHUB_HTTP_FORBIDDEN;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.GITHUB_HTTP_IO;
+import static com.goodworkalan.github4j.downloads.GitHubDownloadException.MALFORMED_URL;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
