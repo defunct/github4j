@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO Document.
 public class GitHubDownloads {
+    // TODO Document.
     public static final List<Download> getDownloads(String account, String project) throws GitHubDownloadException {
         String apiCall = "http://github.com/" + account + "/" + project + "/downloads";
         try {

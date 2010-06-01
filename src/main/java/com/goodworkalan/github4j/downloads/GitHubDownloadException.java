@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+// TODO Document.
 public class GitHubDownloadException extends Exception {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -73,6 +74,7 @@ public class GitHubDownloadException extends Exception {
         this.arguments = arguments;
     }
     
+    // TODO Document.
     public GitHubDownloadException put(String name, Object value) {
         properties.put(name, value);
         return this;
