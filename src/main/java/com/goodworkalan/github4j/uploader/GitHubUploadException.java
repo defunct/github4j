@@ -1,11 +1,11 @@
-package com.goodworkalan.github.downloads;
+package com.goodworkalan.github4j.uploader;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public class GitHubDownloadException extends Exception {
+public class GitHubUploadException extends Exception {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class GitHubDownloadException extends Exception {
      * @param code
      *            The error code.
      */
-    public GitHubDownloadException(int code, Object...arguments) {
+    public GitHubUploadException(int code, Object...arguments) {
         this.code = code;
         this.arguments = arguments;
     }
@@ -67,13 +67,13 @@ public class GitHubDownloadException extends Exception {
      * @param cause
      *            The cause.
      */
-    public GitHubDownloadException(int code, Throwable cause, Object...arguments) {
+    public GitHubUploadException(int code, Throwable cause, Object...arguments) {
         super(null, cause);
         this.code = code;
         this.arguments = arguments;
     }
     
-    public GitHubDownloadException put(String name, Object value) {
+    public GitHubUploadException put(String name, Object value) {
         properties.put(name, value);
         return this;
     }

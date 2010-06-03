@@ -1,50 +1,14 @@
-GITHUB-DOWNLOADS
+GITHUB4J UPLOADER
 
-A Java API to GitHub downloads.
+A Java API to upload to GitHub downloads.
 
-    Issues and Tasks: http://github.com/bigeasy/github-downloads/issues
+    Issues and Tasks: http://github.com/bigeasy/github4j/issues
 
-    Source: http://github.com/bigeasy/github-downloads/tree/master
-    Documentation: http://wiki.github.com/bigeasy/github-downloads
+    Source: http://github.com/bigeasy/github-downloads/tree/uploader
+    Documentation: http://wiki.github.com/bigeasy/github4j
 
     License: The MIT License
 
     Contact: alan@blogometer.com
 
     Dependencies: None.
-
-PURPOSE
-
-A library to list GitHub downloads, delete them, and upload new downloads.
-
-
-MOTIVATION
-
-I'm development a Java build tool that will revolve around GitHub. One of the
-desired outcomes is to use GitHub for artifacts hosting, skirting the confusion
-of Maven repository management, by using GitHub downloads to host artifacts in
-zip archives.
-
-To ease publishing, I want to incorporate upload to GitHub downloads to my
-builds, hence this library.
-
-NOTES
-
-The order of the network calls for upload was taken from Net::GitHub::Upload.
-
-http://github.com/Constellation/ruby-net-github-upload
-
-This libraries forgoes dependencies outside the Java API, so that it is easy to
-adopt and integrate into your Java program.
-
-http://www.ietf.org/rfc/rfc2388.txt
-
-Building a proper multipart/form-data body is not hard, and should not require
-new dependencies, especially since the call is specific to Amazon S3, not
-generalized file uploads to anywhere, so we can do without an HTTP comfort library.
-
-The XML API responses are parsed using the W3 DOM, part of Java 1.5 onward.
-
-Download listings are scraped from the XHTML downloads page of the given GitHub
-project.  The XHTML download page is not well formed. It was not possible to
-parse the XHTML without some form of forgiving HTML parser, so regexs it is.

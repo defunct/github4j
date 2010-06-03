@@ -1,13 +1,13 @@
-package com.goodworkalan.github.downloads;
+package com.goodworkalan.github4j.uploader;
 
-import static com.goodworkalan.github.downloads.GitHubDownloadException.BODY_IO;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.BODY_NOT_FOUND;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_BAD_XML;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.GITHUB_HTTP_IO;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.MALFORMED_URL;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.S3_HTTP_ERROR;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.S3_HTTP_FORBIDDEN;
-import static com.goodworkalan.github.downloads.GitHubDownloadException.S3_HTTP_IO;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.BODY_IO;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.BODY_NOT_FOUND;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.GITHUB_HTTP_BAD_XML;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.GITHUB_HTTP_IO;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.MALFORMED_URL;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.S3_HTTP_ERROR;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.S3_HTTP_FORBIDDEN;
+import static com.goodworkalan.github4j.uploader.GitHubUploadException.S3_HTTP_IO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,15 +48,15 @@ public class GitHubUploader {
         this.token = token;
     }
 
-    public void upload(String project, File file, String description, String contentType, String fileName) throws GitHubDownloadException {
+    public void upload(String project, File file, String description, String contentType, String fileName) throws GitHubUploadException {
         try {
             upload(project, new FileInputStream(file), file.length(), description, contentType, fileName);
         } catch (FileNotFoundException e) {
-            throw new GitHubDownloadException(BODY_NOT_FOUND, e);
+            throw new GitHubUploadException(BODY_NOT_FOUND, e);
         }
     }
 
-    public void upload(String project, InputStream body, long size, String description, String contentType, String fileName) throws GitHubDownloadException {
+    public void upload(String project, InputStream body, long size, String description, String contentType, String fileName) throws GitHubUploadException {
         Map<String, String> upload = new HashMap<String, String>();
         String apiCall = "http://github.com/" + login + "/" + project + "/downloads";
         try {
@@ -99,14 +99,14 @@ public class GitHubUploader {
             // Never happens because UTF-8 and ASCII are always supported.
             throw new RuntimeException(e);
         } catch (MalformedURLException e) {
-            throw new GitHubDownloadException(MALFORMED_URL, apiCall).put("url", apiCall);
+            throw new GitHubUploadException(MALFORMED_URL, apiCall).put("url", apiCall);
         } catch (IOException e) {
-            throw new GitHubDownloadException(GITHUB_HTTP_IO, e);
+            throw new GitHubUploadException(GITHUB_HTTP_IO, e);
         } catch (ParserConfigurationException e) {
             // Yeah, but we didn't do anything to change the configuration.
             throw new RuntimeException(e);
         } catch (SAXException e) {
-            throw new GitHubDownloadException(GITHUB_HTTP_BAD_XML, e);
+            throw new GitHubUploadException(GITHUB_HTTP_BAD_XML, e);
         }
         try {
             Random random = new Random();
@@ -146,11 +146,11 @@ public class GitHubUploader {
                     try {
                         out.write(buffer, 0, read);
                     } catch (IOException e) {
-                        throw new GitHubDownloadException(S3_HTTP_IO, e);
+                        throw new GitHubUploadException(S3_HTTP_IO, e);
                     }
                 }
             } catch (IOException e) {
-                throw new GitHubDownloadException(BODY_IO, e);
+                throw new GitHubUploadException(BODY_IO, e);
             }
             
             field.setLength(0);
@@ -163,9 +163,9 @@ public class GitHubUploader {
             int responseCode = connection.getResponseCode();
             if (responseCode != 201) {
                 if( responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
-                    throw new GitHubDownloadException(S3_HTTP_FORBIDDEN, responseCode);
+                    throw new GitHubUploadException(S3_HTTP_FORBIDDEN, responseCode);
                 }
-                throw new GitHubDownloadException(S3_HTTP_ERROR, responseCode);
+                throw new GitHubUploadException(S3_HTTP_ERROR, responseCode);
             }
         } catch (UnsupportedEncodingException e) {
             // Never happens because UTF-8 and ASCII are always supported.
@@ -174,7 +174,7 @@ public class GitHubUploader {
             // Never happens because the URL is a constant and obviosuly well-formed.
             throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new GitHubDownloadException(S3_HTTP_IO, e);
+            throw new GitHubUploadException(S3_HTTP_IO, e);
         }
     } 
 
