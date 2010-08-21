@@ -57,6 +57,14 @@ public class GitHubUploader {
     }
 
     public void upload(String project, InputStream body, long size, String description, String contentType, String fileName) throws GitHubUploadException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db;
+        try {
+            db = dbf.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            // Yeah, but we didn't do anything to change the configuration.
+            throw new RuntimeException(e);
+        }
         Map<String, String> upload = new HashMap<String, String>();
         String apiCall = "http://github.com/" + login + "/" + project + "/downloads";
         try {
@@ -75,8 +83,6 @@ public class GitHubUploader {
             connection.getOutputStream().write(bytes);
             connection.getOutputStream().flush();
             if (connection.getResponseCode() / 100 != 2) {
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(connection.getErrorStream());
                 NodeList nodes = doc.getElementsByTagName("error");
                 if (nodes.getLength() != 0) {
@@ -84,8 +90,6 @@ public class GitHubUploader {
                 }
                 throw new IOException(Integer.toString(connection.getResponseCode()));
             }
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(connection.getInputStream());
             NodeList nodes = doc.getDocumentElement().getChildNodes();
             for (int i = 0; i < nodes.getLength(); i++) {
@@ -102,9 +106,6 @@ public class GitHubUploader {
             throw new GitHubUploadException(MALFORMED_URL, apiCall).put("url", apiCall);
         } catch (IOException e) {
             throw new GitHubUploadException(GITHUB_HTTP_IO, e);
-        } catch (ParserConfigurationException e) {
-            // Yeah, but we didn't do anything to change the configuration.
-            throw new RuntimeException(e);
         } catch (SAXException e) {
             throw new GitHubUploadException(GITHUB_HTTP_BAD_XML, e);
         }
@@ -128,7 +129,6 @@ public class GitHubUploader {
             addField(out, boundary, "success_action_status", "201");
             addField(out, boundary, "key", upload.get("prefix") + fileName);
             addField(out, boundary, "AWSAccessKeyId", upload.get("accesskeyid"));
-            addField(out, boundary, "Content-Type", contentType);
             addField(out, boundary, "signature", upload.get("signature"));
             addField(out, boundary, "acl", upload.get("acl"));
     
@@ -162,10 +162,29 @@ public class GitHubUploader {
             
             int responseCode = connection.getResponseCode();
             if (responseCode != 201) {
-                if( responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
-                    throw new GitHubUploadException(S3_HTTP_FORBIDDEN, responseCode);
+                Document doc = null;
+                try {
+                    doc = db.parse(connection.getErrorStream());
+                } catch (SAXException e) {
+                    e.printStackTrace();
                 }
-                throw new GitHubUploadException(S3_HTTP_ERROR, responseCode);
+                String errorMessage = "";
+                if (doc != null) {
+                    Map<String, String> error = new HashMap<String, String>();
+                    NodeList nodes = doc.getDocumentElement().getChildNodes();
+                    for (int i = 0; i < nodes.getLength(); i++) {
+                        Node node = nodes.item(i);
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element element = (Element) node;
+                            error.put(element.getNodeName(), element.getTextContent());
+                        }
+                    }
+                    errorMessage = error.get("Message");
+                }
+                if(responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
+                    throw new GitHubUploadException(S3_HTTP_FORBIDDEN, responseCode, errorMessage);
+                }
+                throw new GitHubUploadException(S3_HTTP_ERROR, responseCode, errorMessage);
             }
         } catch (UnsupportedEncodingException e) {
             // Never happens because UTF-8 and ASCII are always supported.
